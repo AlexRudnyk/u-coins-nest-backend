@@ -7,10 +7,17 @@ import { Model } from 'mongoose';
 export class CoinsService {
   constructor(@InjectModel(Coin.name) private coinModel: Model<CoinDocument>) {}
 
-  async findAll(fromPrice?: number, toPrice?: number): Promise<Coin[]> {
+  async findAll(
+    fromPrice?: number,
+    toPrice?: number,
+    q?: string,
+  ): Promise<Coin[]> {
     if (!fromPrice && !toPrice) return [];
     return await this.coinModel
-      .find({ price: { $gte: fromPrice, $lte: toPrice } })
+      .find({
+        price: { $gte: fromPrice, $lte: toPrice },
+        title: { $regex: `${q}`, $options: 'i' },
+      })
       .exec();
   }
 }

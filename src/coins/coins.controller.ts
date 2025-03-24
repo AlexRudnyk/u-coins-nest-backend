@@ -9,10 +9,11 @@ export class CoinsController {
   findAll(
     @Query('fromPrice') fromPrice?: string,
     @Query('toPrice') toPrice?: string,
+    @Query('q') q?: string,
   ) {
     const fromPriceNum = fromPrice ? Number(fromPrice) : 1;
     const toPriceNum = toPrice ? Number(toPrice) : 1000;
 
-    return this.coinsService.findAll(fromPriceNum, toPriceNum);
+    return this.coinsService.findAll(fromPriceNum, toPriceNum, q);
   }
 }

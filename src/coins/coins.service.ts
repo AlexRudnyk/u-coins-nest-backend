@@ -12,12 +12,17 @@ export class CoinsService {
     toPrice?: number,
     q?: string,
   ): Promise<Coin[]> {
-    if (!fromPrice && !toPrice) return [];
-    return await this.coinModel
-      .find({
-        price: { $gte: fromPrice, $lte: toPrice },
-        title: { $regex: `${q}`, $options: 'i' },
-      })
-      .exec();
+    const filter: Partial<Record<keyof Coin, unknown>> = {};
+
+    if (fromPrice) filter.price = { $gte: fromPrice };
+    if (toPrice) {
+      filter.price = {
+        ...(typeof filter.price === 'object' ? filter.price : {}),
+        $lte: toPrice,
+      };
+    }
+    if (q) filter.title = { $regex: q, $options: 'i' };
+
+    return await this.coinModel.find(Object.keys(filter).length ? filter : {});
   }
 }

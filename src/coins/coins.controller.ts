@@ -11,8 +11,8 @@ export class CoinsController {
     @Query('toPrice') toPrice?: string,
     @Query('q') q?: string,
   ) {
-    const fromPriceNum = fromPrice ? Number(fromPrice) : 1;
-    const toPriceNum = toPrice ? Number(toPrice) : 1000;
+    const fromPriceNum = Number(fromPrice);
+    const toPriceNum = Number(toPrice);
 
     return this.coinsService.findAll(fromPriceNum, toPriceNum, q);
   }

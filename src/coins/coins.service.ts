@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Coin, CoinDocument } from './schema/coin.schema';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 @Injectable()
 export class CoinsService {
@@ -24,5 +28,15 @@ export class CoinsService {
     if (q) filter.title = { $regex: q, $options: 'i' };
 
     return await this.coinModel.find(Object.keys(filter).length ? filter : {});
+  }
+
+  async findOne(id: string): Promise<Coin> {
+    if (!isValidObjectId(id))
+      throw new BadRequestException(`Invalid ID format: ${id}`);
+
+    const coin = await this.coinModel.findById(id);
+    if (!coin) throw new NotFoundException(`Coin with ${id} not found`);
+
+    return coin;
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CoinsService } from './coins.service';
 
 @Controller('coins')
@@ -15,5 +15,10 @@ export class CoinsController {
     const toPriceNum = Number(toPrice);
 
     return this.coinsService.findAll(fromPriceNum, toPriceNum, q);
+  }
+
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.coinsService.findOne(id);
   }
 }
